@@ -1,4 +1,6 @@
+#MDM (Multidisciplinary Minor) Cyber Security Project under NEP (National Education Policy)
 # Lightweight Attack Surface Analysis Tool (v2)
+
 
 A Python, standard-library-only tool that maps the publicly exposed parts of a domain, finds likely
 weaknesses, scores the risk, tracks changes between scans and produces an interactive report.
