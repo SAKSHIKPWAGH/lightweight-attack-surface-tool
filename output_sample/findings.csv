@@ -1,0 +1,15 @@
+severity,host,id,title,category,ports,evidence,recommendation,references
+Critical,localhost,CORS-REFLECT,CORS reflects arbitrary Origin,Access control,8000,Origin reflected with credentials,Validate the Origin against an allow-list; never reflect it blindly (especially with credentials).,CWE-942 | OWASP A05:2021
+Critical,localhost,PATH-ENV,Exposed .env configuration file,Sensitive exposure,,/.env,Remove the file from the web root and rotate every credential it contains.,CWE-538 | OWASP A05:2021
+Critical,localhost,PATH-GIT,Exposed .git repository,Sensitive exposure,,/.git/HEAD,Block /.git at the web server and remove it from the web root; rotate any secrets it contained.,CWE-538 | OWASP A05:2021
+Medium,localhost,COOKIE-HTTPONLY,Cookie without HttpOnly flag,Session management,8000,PHPSESSID,Set HttpOnly so scripts cannot read session cookies.,CWE-1004
+Medium,localhost,HDR-CSP,Missing Content-Security-Policy header,Web security headers,8000,port 8000,Define a Content-Security-Policy to limit script sources and reduce XSS impact.,CWE-79 | OWASP A05:2021
+Medium,localhost,HTTP-NOHTTPS,Web service offered only over HTTP,Transport security,8000,"port 8000 serves HTTP, no HTTPS port found",Enable TLS for the service.,CWE-319 | OWASP A02:2021
+Medium,localhost,PATH-PHPINFO,Exposed phpinfo() page,Sensitive exposure,,/phpinfo.php,Delete phpinfo pages from production servers.,CWE-200
+Low,localhost,COOKIE-SAMESITE,Cookie without SameSite attribute,Session management,8000,PHPSESSID,Set SameSite=Lax or Strict to reduce CSRF risk.,CWE-1275
+Low,localhost,HDR-REF,Missing Referrer-Policy header,Web security headers,8000,port 8000,Send a Referrer-Policy such as 'strict-origin-when-cross-origin'.,CWE-200
+Low,localhost,HDR-XCTO,Missing X-Content-Type-Options header,Web security headers,8000,port 8000,Send 'X-Content-Type-Options: nosniff'.,CWE-693
+Low,localhost,HDR-XFO,Missing clickjacking protection,Web security headers,8000,port 8000,Send X-Frame-Options or a CSP frame-ancestors directive.,CWE-1021
+Low,localhost,INFO-DISC,Software version disclosed in HTTP headers,Information disclosure,8000,server: Apache/2.4.29 (Ubuntu) ; x-powered-by: PHP/7.2.1,Hide version details from Server / X-Powered-By; exact versions help attackers match known CVEs.,CWE-200
+Info,localhost,INFO-NOSECTXT,No security.txt published,Process,,-,Publish /.well-known/security.txt so researchers know how to report issues.,RFC 9116
+Info,localhost,INFO-ROBOTS,robots.txt lists disallowed paths,Reconnaissance,,/robots.txt; 2 disallowed path(s),robots.txt is public; protect sensitive paths with authentication rather than hiding them.,CWE-200

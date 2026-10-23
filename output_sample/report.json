@@ -1,0 +1,298 @@
+{
+  "results": {
+    "target": "localhost",
+    "scanned_at": "2026-10-14T09:23:44",
+    "duration_s": 0.0,
+    "profile": "custom",
+    "dns": {
+      "resolver": "8.8.8.8",
+      "resolver_ok": false,
+      "records": {},
+      "email": {
+        "checked": false
+      },
+      "dangling": [],
+      "sources": {
+        "localhost": [
+          "target"
+        ]
+      },
+      "wildcard": false
+    },
+    "hosts": {
+      "localhost": {
+        "ip": "127.0.0.1",
+        "ports": [
+          {
+            "port": 8000,
+            "service": "HTTP-alt",
+            "banner": ""
+          }
+        ],
+        "http": [
+          {
+            "status": 200,
+            "headers": {
+              "server": "Apache/2.4.29 (Ubuntu) ",
+              "date": "Wed, 14 Oct 2026 09:23:44 GMT",
+              "content-type": "text/html",
+              "x-powered-by": "PHP/7.2.1",
+              "content-length": "77"
+            },
+            "port": 8000,
+            "tls": false,
+            "final_tls": false,
+            "redirects": [],
+            "redirect_to_https": false,
+            "tech": [
+              "Apache/2.4.29 (Ubuntu) ",
+              "PHP",
+              "PHP/7.2.1"
+            ],
+            "title": "Demo Corp Portal",
+            "cookie_issues": [
+              {
+                "name": "PHPSESSID",
+                "secure": false,
+                "httponly": false,
+                "samesite": false
+              }
+            ],
+            "cors": {
+              "acao": "https://asa-origin-test.invalid",
+              "credentials": true,
+              "reflected": true
+            }
+          }
+        ],
+        "tls": null,
+        "web": {
+          "tech": [
+            "Apache/2.4.29 (Ubuntu) ",
+            "PHP",
+            "PHP/7.2.1"
+          ],
+          "paths": {
+            "found": [
+              {
+                "rule": "PATH-GIT",
+                "path": "/.git/HEAD"
+              },
+              {
+                "rule": "PATH-ENV",
+                "path": "/.env"
+              },
+              {
+                "rule": "PATH-PHPINFO",
+                "path": "/phpinfo.php"
+              },
+              {
+                "rule": "INFO-ROBOTS",
+                "path": "/robots.txt"
+              }
+            ],
+            "robots": [
+              "/admin",
+              "/backup"
+            ],
+            "security_txt": false
+          }
+        }
+      }
+    }
+  },
+  "findings": [
+    {
+      "id": "CORS-REFLECT",
+      "host": "localhost",
+      "title": "CORS reflects arbitrary Origin",
+      "severity": "Critical",
+      "category": "Access control",
+      "evidence": "Origin reflected with credentials",
+      "recommendation": "Validate the Origin against an allow-list; never reflect it blindly (especially with credentials).",
+      "refs": "CWE-942 | OWASP A05:2021",
+      "ports": [
+        8000
+      ]
+    },
+    {
+      "id": "PATH-ENV",
+      "host": "localhost",
+      "title": "Exposed .env configuration file",
+      "severity": "Critical",
+      "category": "Sensitive exposure",
+      "evidence": "/.env",
+      "recommendation": "Remove the file from the web root and rotate every credential it contains.",
+      "refs": "CWE-538 | OWASP A05:2021",
+      "ports": []
+    },
+    {
+      "id": "PATH-GIT",
+      "host": "localhost",
+      "title": "Exposed .git repository",
+      "severity": "Critical",
+      "category": "Sensitive exposure",
+      "evidence": "/.git/HEAD",
+      "recommendation": "Block /.git at the web server and remove it from the web root; rotate any secrets it contained.",
+      "refs": "CWE-538 | OWASP A05:2021",
+      "ports": []
+    },
+    {
+      "id": "COOKIE-HTTPONLY",
+      "host": "localhost",
+      "title": "Cookie without HttpOnly flag",
+      "severity": "Medium",
+      "category": "Session management",
+      "evidence": "PHPSESSID",
+      "recommendation": "Set HttpOnly so scripts cannot read session cookies.",
+      "refs": "CWE-1004",
+      "ports": [
+        8000
+      ]
+    },
+    {
+      "id": "HDR-CSP",
+      "host": "localhost",
+      "title": "Missing Content-Security-Policy header",
+      "severity": "Medium",
+      "category": "Web security headers",
+      "evidence": "port 8000",
+      "recommendation": "Define a Content-Security-Policy to limit script sources and reduce XSS impact.",
+      "refs": "CWE-79 | OWASP A05:2021",
+      "ports": [
+        8000
+      ]
+    },
+    {
+      "id": "HTTP-NOHTTPS",
+      "host": "localhost",
+      "title": "Web service offered only over HTTP",
+      "severity": "Medium",
+      "category": "Transport security",
+      "evidence": "port 8000 serves HTTP, no HTTPS port found",
+      "recommendation": "Enable TLS for the service.",
+      "refs": "CWE-319 | OWASP A02:2021",
+      "ports": [
+        8000
+      ]
+    },
+    {
+      "id": "PATH-PHPINFO",
+      "host": "localhost",
+      "title": "Exposed phpinfo() page",
+      "severity": "Medium",
+      "category": "Sensitive exposure",
+      "evidence": "/phpinfo.php",
+      "recommendation": "Delete phpinfo pages from production servers.",
+      "refs": "CWE-200",
+      "ports": []
+    },
+    {
+      "id": "COOKIE-SAMESITE",
+      "host": "localhost",
+      "title": "Cookie without SameSite attribute",
+      "severity": "Low",
+      "category": "Session management",
+      "evidence": "PHPSESSID",
+      "recommendation": "Set SameSite=Lax or Strict to reduce CSRF risk.",
+      "refs": "CWE-1275",
+      "ports": [
+        8000
+      ]
+    },
+    {
+      "id": "HDR-REF",
+      "host": "localhost",
+      "title": "Missing Referrer-Policy header",
+      "severity": "Low",
+      "category": "Web security headers",
+      "evidence": "port 8000",
+      "recommendation": "Send a Referrer-Policy such as 'strict-origin-when-cross-origin'.",
+      "refs": "CWE-200",
+      "ports": [
+        8000
+      ]
+    },
+    {
+      "id": "HDR-XCTO",
+      "host": "localhost",
+      "title": "Missing X-Content-Type-Options header",
+      "severity": "Low",
+      "category": "Web security headers",
+      "evidence": "port 8000",
+      "recommendation": "Send 'X-Content-Type-Options: nosniff'.",
+      "refs": "CWE-693",
+      "ports": [
+        8000
+      ]
+    },
+    {
+      "id": "HDR-XFO",
+      "host": "localhost",
+      "title": "Missing clickjacking protection",
+      "severity": "Low",
+      "category": "Web security headers",
+      "evidence": "port 8000",
+      "recommendation": "Send X-Frame-Options or a CSP frame-ancestors directive.",
+      "refs": "CWE-1021",
+      "ports": [
+        8000
+      ]
+    },
+    {
+      "id": "INFO-DISC",
+      "host": "localhost",
+      "title": "Software version disclosed in HTTP headers",
+      "severity": "Low",
+      "category": "Information disclosure",
+      "evidence": "server: Apache/2.4.29 (Ubuntu) ; x-powered-by: PHP/7.2.1",
+      "recommendation": "Hide version details from Server / X-Powered-By; exact versions help attackers match known CVEs.",
+      "refs": "CWE-200",
+      "ports": [
+        8000
+      ]
+    },
+    {
+      "id": "INFO-NOSECTXT",
+      "host": "localhost",
+      "title": "No security.txt published",
+      "severity": "Info",
+      "category": "Process",
+      "evidence": "-",
+      "recommendation": "Publish /.well-known/security.txt so researchers know how to report issues.",
+      "refs": "RFC 9116",
+      "ports": []
+    },
+    {
+      "id": "INFO-ROBOTS",
+      "host": "localhost",
+      "title": "robots.txt lists disallowed paths",
+      "severity": "Info",
+      "category": "Reconnaissance",
+      "evidence": "/robots.txt; 2 disallowed path(s)",
+      "recommendation": "robots.txt is public; protect sensitive paths with authentication rather than hiding them.",
+      "refs": "CWE-200",
+      "ports": []
+    }
+  ],
+  "summary": {
+    "score": 51,
+    "rating": "High",
+    "counts": {
+      "Critical": 3,
+      "High": 0,
+      "Medium": 4,
+      "Low": 5,
+      "Info": 2
+    },
+    "host_scores": {
+      "localhost": 51
+    },
+    "metrics": {
+      "hosts": 1,
+      "open_ports": 1,
+      "web_services": 1
+    }
+  },
+  "diff": null
+}
